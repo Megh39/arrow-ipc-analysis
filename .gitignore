@@ -1,0 +1,47 @@
+# -----------------------------
+# C++ / CMake build artifacts
+# -----------------------------
+build/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+Makefile
+*.cmake
+
+# Compiled binaries / objects
+*.o
+*.so
+*.a
+*.out
+*.exe
+
+# -----------------------------
+# Python artifacts
+# -----------------------------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.env/
+
+# -----------------------------
+# Logs and experiment outputs
+# -----------------------------
+*.log
+*.csv
+*.tmp
+
+# -----------------------------
+# OS junk
+# -----------------------------
+.DS_Store
+Thumbs.db
+
+# -----------------------------
+# Editor / IDE files
+# -----------------------------
+.vscode/
+.idea/
