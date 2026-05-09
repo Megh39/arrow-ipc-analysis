@@ -1,4 +1,8 @@
-# Apache Arrow IPC Serialization Analysis
+# Apache Arrow IPC Serialization Analysis 
+
+A systems-level experimental analysis of Apache Arrow IPC internals, zero-copy semantics, and analytical serialization performance using instrumented Apache Arrow source code.
+
+--- 
 
 # Overview
 
@@ -22,6 +26,30 @@ The project includes:
 The experiments were conducted using a locally built and modified Apache Arrow source tree.
 
 ---
+````markdown
+# Quick Start
+
+```bash
+git clone https://github.com/Megh39/arrow-ipc-analysis
+
+cd arrow-ipc-analysis-linux
+
+python3 -m venv venv
+
+source venv/bin/activate
+
+pip install -r requirements.txt
+
+jupyter notebook
+````
+
+The primary experiments are located inside:
+
+```text
+notebooks/
+```
+
+```
 
 # Project Objectives
 
@@ -36,6 +64,17 @@ The primary objectives of this project are:
 7. To analyze limitations and failure scenarios
 
 ---
+# Key Contributions
+
+This project includes the following major contributions:
+
+* Instrumentation of Apache Arrow IPC serializer internals
+* Experimental benchmarking of Arrow IPC against alternative serialization systems
+* Analysis of zero-copy slicing semantics and memory reuse
+* Analytical/ML ingestion pipeline benchmarking
+* Investigation of IPC batching and metadata behavior
+* Failure analysis of compression codec integration and batching tradeoffs
+* Reproducible local Arrow source build and PyArrow integration workflow
 
 # Technologies Used
 
@@ -78,28 +117,55 @@ This enables:
 
 ---
 
+# Real-World Relevance
+
+Apache Arrow forms the foundation of many modern analytical systems and high-performance data processing frameworks.
+
+Arrow IPC and Arrow memory structures are widely used in:
+
+* Pandas interoperability
+* Apache Spark
+* DuckDB
+* DataFusion
+* Polars
+* GPU analytics systems
+* vectorized analytical execution engines
+
+The performance characteristics explored in this project directly impact:
+
+* analytical query latency
+* ML pipeline startup overhead
+* cross-language data exchange
+* memory efficiency in columnar systems
+
+---
+
 # Project Structure
 
-```text
-project/
+arrow-ipc-analysis-linux/
 │
 ├── notebooks/
-│   ├── serialization_benchmark.ipynb
-│   ├── slicing_experiment.ipynb
-│   ├── ml_pipeline_benchmark.ipynb
-│   ├── dictionary_encoding.ipynb
+│   ├── 01_serialization_benchmark.ipynb
+│   ├── 02_zero_copy_slicing.ipynb
+│   ├── 03_ml_pipeline_benchmark.ipynb
+│   ├── 04_dictionary_encoding.ipynb
 │
 ├── results/
-│   ├── graphs/
-│   ├── csv_outputs/
+│   ├── serialization/
+│   ├── slicing/
+│   ├── ml_pipeline/
+│   ├── dictionary/
 │
 ├── modified_arrow/
-│   └── writer.cc modifications
+│   ├── writer.cc.notes.md
+│   └── instrumentation_output_examples.txt
 │
-├── README.md
+├── report/
 │
-└── report/
-```
+├── scripts/
+│
+├── requirements.txt
+└── README.md
 
 ---
 
@@ -428,12 +494,12 @@ jupyter lab
 
 The following notebooks were used:
 
-| Notebook                      | Purpose                      |
-| ----------------------------- | ---------------------------- |
-| serialization_benchmark.ipynb | Format comparison            |
-| slicing_experiment.ipynb      | Zero-copy slicing            |
-| ml_pipeline_benchmark.ipynb   | ML ingestion pipeline        |
-| dictionary_encoding.ipynb     | Dictionary encoding analysis |
+| Notebook                             | Purpose                      |
+| ------------------------------------ | ---------------------------- |
+| 01_serialization_benchmark.ipynb     | Format comparison            |
+| 02_zero_copy_slicing.ipynb           | Zero-copy slicing            |
+| 03_ml_pipeline_benchmark.ipynb       | ML ingestion pipeline        |
+| 04_dictionary_encoding.ipynb         | Dictionary encoding analysis |
 
 ---
 
