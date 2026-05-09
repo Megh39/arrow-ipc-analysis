@@ -48,8 +48,6 @@ The primary experiments are located inside:
 notebooks/
 ```
 
-```
-
 # Project Objectives
 
 The primary objectives of this project are:
