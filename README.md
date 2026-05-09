@@ -139,6 +139,7 @@ The performance characteristics explored in this project directly impact:
 
 # Project Structure
 
+```text
 arrow-ipc-analysis-linux/
 │
 ├── notebooks/
@@ -163,7 +164,7 @@ arrow-ipc-analysis-linux/
 │
 ├── requirements.txt
 └── README.md
-
+```
 ---
 
 # Source Code Instrumentation
