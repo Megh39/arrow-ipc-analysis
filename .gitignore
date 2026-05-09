@@ -1,47 +1,27 @@
-# -----------------------------
-# C++ / CMake build artifacts
-# -----------------------------
-build/
-cmake-build-*/
-CMakeFiles/
-CMakeCache.txt
-Makefile
-*.cmake
-
-# Compiled binaries / objects
-*.o
-*.so
-*.a
-*.out
-*.exe
-
-# -----------------------------
-# Python artifacts
-# -----------------------------
+# Python
+venv/
+venv_wsl/
 __pycache__/
 *.pyc
-*.pyo
-*.pyd
 
-# Virtual environments
-venv/
-.env/
-
-# -----------------------------
-# Logs and experiment outputs
-# -----------------------------
-*.log
+# Experiment outputs
 *.csv
-*.tmp
+*.npy
+*.pkl
+*.parquet
+*.h5
+*.db
 
-# -----------------------------
-# OS junk
-# -----------------------------
-.DS_Store
-Thumbs.db
-
-# -----------------------------
-# Editor / IDE files
-# -----------------------------
+# Arrow builds
+arrow/cpp/build/
+arrow-install/
+arrow-dist/
+arrow/
+all_experiments
+experiments
+# VS Code
 .vscode/
-.idea/
+
+# Temporary
+temp.*
+output_data.*

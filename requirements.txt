@@ -1,0 +1,14 @@
+numpy 
+pandas 
+pyarrow 
+sqlalchemy 
+duckdb 
+h5py 
+tables 
+notebook 
+jupyterlab 
+matplotlib
+pip 
+setuptools 
+wheel 
+cython
