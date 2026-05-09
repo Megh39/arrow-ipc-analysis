@@ -26,7 +26,6 @@ The project includes:
 The experiments were conducted using a locally built and modified Apache Arrow source tree.
 
 ---
-````markdown
 # Quick Start
 
 ```bash
