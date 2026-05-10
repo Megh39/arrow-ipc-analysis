@@ -101,8 +101,7 @@ arrow/cpp/src/arrow/ipc/writer.cc
 
 **Core function analyzed:**
 
-```
-cpp
+```cpp
 RecordBatchSerializer::Assemble()
 ```
 
@@ -153,8 +152,7 @@ The Arrow IPC serializer was modified directly inside `arrow/cpp/src/arrow/ipc/w
 
 Instrumentation was added inside:
 
-```
-cpp
+```cpp
 Status Assemble(const RecordBatch& batch)
 ```
 
@@ -381,31 +379,27 @@ Visualized buffer organization for primitive, list, and struct arrays.
 
 ### Clone Repository
 
-```
-bash
+```bash
 git clone https://github.com/Megh39/arrow-ipc-analysis
 cd arrow-ipc-analysis
 ```
 
 ### Create Environment
 
-```
-bash
+```bash
 python3 -m venv venv
 source venv/bin/activate   # On Windows: venv\Scripts\activate
 ```
 
 ### Install Dependencies
 
-```
-bash
+```bash
 pip install -r requirements.txt
 ```
 
 ### Launch Jupyter Notebook
 
-```
-bash
+```bash
 jupyter notebook
 ```
 
@@ -415,8 +409,7 @@ All experiments are available in the `notebooks/` directory.
 
 To modify and instrument the Arrow C++ source code:
 
-```
-bash
+```bash
 # Install build dependencies (Ubuntu example)
 sudo apt install build-essential cmake python3-dev
 
