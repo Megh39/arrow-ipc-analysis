@@ -303,17 +303,19 @@ cd arrow/cpp/build
 
 ```bash
 cmake .. \
--DCMAKE_BUILD_TYPE=Release \
--DARROW_PYTHON=ON \
--DARROW_IPC=ON \
--DARROW_DATASET=ON \
--DARROW_PARQUET=ON \
--DARROW_COMPUTE=ON \
--DARROW_CSV=ON \
--DARROW_JSON=ON \
--DARROW_WITH_ZSTD=ON \
--DARROW_WITH_LZ4=ON \
--GNinja
+  -G "Unix Makefiles" \
+  -DCMAKE_BUILD_TYPE=Debug \
+  -DCMAKE_INSTALL_PREFIX=~/arrow-ipc-analysis-linux/arrow-dist \
+  -DPYTHON_EXECUTABLE=$(which python) \
+  -DARROW_PYTHON=ON \
+  -DARROW_IPC=ON \
+  -DARROW_DATASET=ON \
+  -DARROW_PARQUET=ON \
+  -DARROW_COMPUTE=ON \
+  -DARROW_CSV=ON \
+  -DARROW_JSON=ON \
+  -DARROW_WITH_ZSTD=ON \
+  -DARROW_WITH_LZ4=ON
 ```
 
 ## Compile Arrow

@@ -29,7 +29,8 @@
 #include <unordered_map>
 #include <utility>
 #include <vector>
-
+#include <chrono>
+#include <iostream>
 #include "arrow/array.h"
 #include "arrow/buffer.h"
 #include "arrow/device.h"
@@ -251,37 +252,57 @@ class RecordBatchSerializer {
         options_.use_threads, static_cast<int>(out_->body_buffers.size()), CompressOne);
   }
 
+
   Status Assemble(const RecordBatch& batch) {
+    auto start_time = std::chrono::high_resolution_clock::now();
+
+    std::cout << "\n";
+    std::cout << "==================================================\n";
+    std::cout << "CUSTOM IPC BUILD ACTIVE\n";
+    std::cout << "RecordBatch Serialization Started\n";
+    std::cout << "==================================================\n";
+
+    std::cout << "Rows             : " << batch.num_rows() << "\n";
+    std::cout << "Columns          : " << batch.num_columns() << "\n";
+
     if (!field_nodes_.empty()) {
-      field_nodes_.clear();
-      buffer_meta_.clear();
-      out_->body_buffers.clear();
+        field_nodes_.clear();
+        buffer_meta_.clear();
+        out_->body_buffers.clear();
     }
 
     // Perform depth-first traversal of the row-batch
     for (int i = 0; i < batch.num_columns(); ++i) {
-      RETURN_NOT_OK(VisitArray(*batch.column(i)));
+        RETURN_NOT_OK(VisitArray(*batch.column(i)));
     }
+    
+    std::cout << "Field Nodes      : " << field_nodes_.size() << "\n";
+    std::cout << "Body Buffers     : " << out_->body_buffers.size() << "\n";
 
     // calculate initial body length using all buffer sizes
     int64_t raw_size = 0;
     for (const auto& buf : out_->body_buffers) {
-      if (buf) {
-        raw_size += buf->size();
-      }
+        if (buf) {
+            raw_size += buf->size();
+        }
     }
     out_->raw_body_length = raw_size;
+    std::cout << "Raw Body Size    : " << raw_size << " bytes\n";
 
     if (options_.codec != nullptr) {
-      if (options_.min_space_savings) {
-        double percentage = *options_.min_space_savings;
-        if (percentage < 0 || percentage > 1) {
-          return Status::Invalid(
-              "min_space_savings not in range [0,1]. Provided: ",
-              std::setprecision(std::numeric_limits<double>::max_digits10), percentage);
+        std::cout << "Compression      : ENABLED\n";
+        if (options_.min_space_savings) {
+            double percentage = *options_.min_space_savings;
+            if (percentage < 0 || percentage > 1) {
+                return Status::Invalid(
+                    "min_space_savings not in range [0,1]. Provided: ",
+                    std::setprecision(std::numeric_limits<double>::max_digits10), 
+                    percentage);
+            }
         }
-      }
-      RETURN_NOT_OK(CompressBodyBuffers());
+        RETURN_NOT_OK(CompressBodyBuffers());
+    } else {
+        std::cout << "Compression      : DISABLED\n";
     }
 
     // The position for the start of a buffer relative to the passed frame of
@@ -292,32 +313,36 @@ class RecordBatchSerializer {
 
     // Construct the buffer metadata for the record batch header
     for (const auto& buffer : out_->body_buffers) {
-      int64_t size = 0;
-      int64_t padding = 0;
+        int64_t size = 0;
+        int64_t padding = 0;
 
-      // The buffer might be null if we are handling zero row lengths.
-      if (buffer) {
-        size = buffer->size();
-        padding = bit_util::RoundUpToMultipleOf8(size) - size;
-      }
+        // The buffer might be null if we are handling zero row lengths.
+        if (buffer) {
+            size = buffer->size();
+            padding = bit_util::RoundUpToMultipleOf8(size) - size;
+        }
 
-      buffer_meta_.push_back({offset, size});
-      offset += size + padding;
+        buffer_meta_.push_back({offset, size});
+        offset += size + padding;
     }
 
     variadic_counts_ = out_->variadic_buffer_counts;
 
     out_->body_length = offset - buffer_start_offset_;
+    std::cout << "IPC Body Size    : " << out_->body_length << " bytes\n";
+
     DCHECK(bit_util::IsMultipleOf8(out_->body_length));
 
-    // Now that we have computed the locations of all of the buffers in shared
-    // memory, the data header can be converted to a flatbuffer and written out
-    //
-    // Note: The memory written here is prefixed by the size of the flatbuffer
-    // itself as an int32_t.
-    return SerializeMetadata(batch.num_rows());
-  }
+    auto end_time = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
 
+    std::cout << "Serialization Time : " << duration.count() << " us\n";
+    std::cout << "==================================================\n";
+    std::cout << "Serialization Complete\n";
+    std::cout << "==================================================\n";
+
+    return SerializeMetadata(batch.num_rows());
+}
   template <typename ArrayType>
   Status GetZeroBasedValueOffsets(const ArrayType& array,
                                   std::shared_ptr<Buffer>* value_offsets) {

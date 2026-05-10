@@ -1,0 +1,7 @@
+================================================================================
+ZERO-COPY SLICING EXPERIMENT SUMMARY
+================================================================================
+
+            Case  Creation_Time_s  Peak_Memory_KB  Serialization_Time_s  Serialized_Size_MB
+0     Slice View         0.000268       18.822266              0.004540            7.629662
+1  Physical Copy         5.227491    16781.250000              0.001134            7.629662
