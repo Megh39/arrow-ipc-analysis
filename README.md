@@ -374,63 +374,132 @@ Visualized buffer organization for primitive, list, and struct arrays.
 **Tradeoff:** Larger batches improve throughput but reduce memory efficiency and increase allocation overhead.
 
 ---
-
 ## Reproducing the Experiments
 
-### Clone Repository
+The experiments were executed using a locally modified Apache Arrow build with additional instrumentation added to the IPC serializer implementation inside:
+
+```cpp
+arrow/cpp/src/arrow/ipc/writer.cc
+```
+
+All experiments were executed through Jupyter notebooks using the custom PyArrow build.
+
+---
+
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/Megh39/arrow-ipc-analysis
 cd arrow-ipc-analysis
 ```
 
-### Create Environment
+---
+
+### 2. Create Python Environment
 
 ```bash
 python3 -m venv venv
-source venv/bin/activate   # On Windows: venv\Scripts\activate
+source venv/bin/activate
 ```
 
-### Install Dependencies
+Windows:
+
+```bash
+venv\Scripts\activate
+```
+
+---
+
+### 3. Install Python Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### Launch Jupyter Notebook
+---
+
+### 4. Clone Apache Arrow Source
 
 ```bash
-jupyter notebook
-```
-
-All experiments are available in the `notebooks/` directory.
-
-### Building Arrow from Source (Optional)
-
-To modify and instrument the Arrow C++ source code:
-
-```bash
-# Install build dependencies (Ubuntu example)
-sudo apt install build-essential cmake python3-dev
-
-# Clone Arrow repository
 git clone https://github.com/apache/arrow.git
 cd arrow
 git submodule update --init --recursive
-
-# Build Arrow C++ with Python bindings
-mkdir cpp/build
-cd cpp/build
-cmake .. -DCMAKE_BUILD_TYPE=debug -DARROW_PYTHON=ON -DARROW_PARQUET=ON -DARROW_DATASET=ON
-make -j4 install
-
-# Install PyArrow in editable mode
-cd ../..
-pip install -e python/ --no-deps
 ```
 
 ---
 
+### 5. Build Apache Arrow with Python Bindings
+
+Ubuntu / WSL example:
+
+```bash
+sudo apt install build-essential cmake python3-dev
+```
+
+Build Arrow:
+
+```bash
+mkdir -p cpp/build
+cd cpp/build
+
+cmake .. \
+  -DCMAKE_BUILD_TYPE=Debug \
+  -DARROW_PYTHON=ON \
+  -DARROW_PARQUET=ON \
+  -DARROW_DATASET=ON
+
+make -j4
+```
+
+---
+
+### 6. Install Modified PyArrow Build
+
+From Arrow root directory:
+
+```bash
+cd ../../python
+pip install -e . --no-deps
+```
+
+This ensures the notebooks use the locally modified IPC serializer implementation instead of the default PyPI build.
+
+---
+
+### 7. Launch Jupyter Notebook
+
+Return to project root:
+
+```bash
+cd ../../arrow-ipc-analysis
+jupyter notebook
+```
+
+---
+
+### 8. Run Experiments
+
+The project contains seven primary experiments:
+
+| Notebook | Purpose |
+|---|---|
+| `01_serialization_benchmark.ipynb` | Compare Arrow IPC against alternative serialization systems |
+| `02_zero_copy_slicing.ipynb` | Analyze zero-copy slicing behavior |
+| `03_ml_pipeline_benchmark.ipynb` | Measure analytical ingestion latency |
+| `04_arrow_ipc_batch_effects.ipynb` | Study RecordBatch size tradeoffs |
+| `05_arrow_ipc_compression_effects.ipynb` | Analyze LZ4 and ZSTD compression behavior |
+| `06_arrow_ipc_nested_array_effects.ipynb` | Measure nested serialization complexity |
+| `07_arrow_ipc_memory_layout_visualization.ipynb` | Visualize Arrow buffer organization |
+
+---
+
+### 9. Important Notes
+
+- Experiments were executed on Ubuntu WSL using Python 3.12.
+- Serialization behavior depends heavily on RecordBatch size, schema complexity, and buffer layout.
+- Some experiments intentionally stress Arrow IPC using deeply nested structures and large batch sizes.
+- Compression experiments require Arrow compression support enabled during build.
+- The project focuses on systems-level behavior analysis rather than API usage demonstrations.
 ## Project Structure
 
 ```
@@ -454,9 +523,7 @@ arrow-ipc-analysis-linux/
 │   ├── nested_array_effects/
 │   └── memory_layout_visualization/
 │
-├── modified_arrow/          (optional, for source modifications)
-├── report/
-├── scripts/
+├── arrow/          
 ├── requirements.txt
 └── README.md
 ```
@@ -477,6 +544,13 @@ This project explored:
 - batching tradeoffs
 - memory management behavior
 - performance benchmarking
+
+---
+
+
+## Future Enhancements
+
+- Create scripts which can be run without compiling the library
 
 ---
 
